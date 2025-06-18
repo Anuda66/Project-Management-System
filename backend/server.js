@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express(); 
 
@@ -21,8 +22,8 @@ connectDB();
 // Middleware to parse JSON requests-----------------------------------
 app.use(express.json());
 
-// Rotes
-// app.use('/api/auth', authRoutes)
+// Rotes----------------------------------------------------
+app.use('/api/auth', authRoutes)
 // app.use('/api/users', userRotes)
 // app.use('/api/task', taskRotes)
 // app.use('/api/reports', reportRotes)
