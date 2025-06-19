@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+
 //genarate jwt token--------------------------------------
 const generateToken = (userId) => {
     return jwt.sign({ id: userId}, process.env.JWT_SECRET, {expiresIn: '7d'});
@@ -47,6 +48,7 @@ const registerUser = async (req, res) => {
             profileImageUrl: user.profileImageUrl,
             token: generateToken(user._id)
         })        
+        
     }
     catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -61,6 +63,7 @@ const loginUser = async (req, res) => {
         const { email, password} = req.body;
 
         const user = await User.findOne({ email });
+
         if (!user){
             return res.status(400).json({message: 'Invalid email or password'});
         }
@@ -92,7 +95,11 @@ const loginUser = async (req, res) => {
 //@access privete (Requires JWT)
 const getUserProfile = async (req, res) => {
     try {
-
+        const user = await User.findById(req.user.id).select('-password')
+        if (!user){
+            return res.status(404).json({message:"User not found"})
+        }
+        res.json(user)
     }
     catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
